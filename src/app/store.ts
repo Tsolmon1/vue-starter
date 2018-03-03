@@ -34,10 +34,12 @@ export const getStore = (serverContext?: IServerContext): Store<IState> => {
 
     if (state.app && state.app.lang) {
       serverContext.acceptLanguage = state.app.lang;
-      serverContext.htmlLang = state.app.lang.substr(0, 2);
+      serverContext.htmlLang       = state.app.lang.substr(0, 2);
+      serverContext.appConfig      = state.app.config;
     } else {
       state.app = {
-        lang: serverContext.acceptLanguage,
+        lang:   serverContext.acceptLanguage,
+        config: serverContext.appConfig,
       };
     }
   }

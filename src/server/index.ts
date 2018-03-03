@@ -8,6 +8,7 @@ import { BundleRenderer }             from 'vue-server-renderer';
 import { Handler, Request, Response } from 'express';
 import * as cookieParser              from 'cookie-parser';
 import acceptLanguage                 from 'accept-language';
+import { IAppConfig }                 from '../app/config/IAppConfig';
 
 const app: Express.Application = Express();
 const compression: any = require('compression');
@@ -117,6 +118,7 @@ app.get('*', (req: Request, res: Response) => {
     ? req.headers['accept-language'].toString()
     : packageJson.config['default-language'];
   const defaultLang: string = acceptLanguage.get(acceptLang);
+  const appConfig: IAppConfig = JSON.parse(APP_CONFIG);
 
   renderer
   .renderToStream({
@@ -124,6 +126,7 @@ app.get('*', (req: Request, res: Response) => {
                     cookies:        req.cookies,
                     acceptLanguage: defaultLang,
                     htmlLang:       defaultLang.substr(0, 2),
+                    appConfig,
                   })
   .on('error', errorHandler)
   .on('end', () => console.log(`whole request: ${Date.now() - startTime}ms`))

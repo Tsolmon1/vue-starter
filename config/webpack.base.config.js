@@ -2,6 +2,12 @@ const path = require('path');
 const webpack = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const isProd = process.env.NODE_ENV === 'production';
+// Load application config through node-config
+// The double JSON.stringify is necessary, the first stringify returns a String
+// representation of the object, the second stringify creates valid JSON.
+process.env["NODE_CONFIG_DIR"] = __dirname + "/../src/app/config";
+const envConfig = JSON.parse(process.env.CONFIG || '{}');
+const appConfig = JSON.stringify(JSON.stringify(Object.assign({}, require('config'), envConfig)));
 
 const baseConfig = {
   stats:   {
@@ -22,6 +28,7 @@ const baseConfig = {
                                PRODUCTION:             isProd,
                                DEVELOPMENT:            !isProd,
                                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                               APP_CONFIG:             appConfig,
                              }),
   ],
   module:  {
